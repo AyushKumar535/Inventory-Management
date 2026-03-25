@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -14,11 +15,15 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import { Separator } from '@/components/ui/separator'
-import { GenerateInvoiceButton } from '@/components/generate-invoice-button'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { ArrowLeft, Loader2, Truck, PackageCheck, Ban, RotateCcw } from 'lucide-react'
 import Image from 'next/image'
+
+const GenerateInvoiceButton = dynamic(
+    () => import('@/components/generate-invoice-button').then(mod => mod.GenerateInvoiceButton),
+    { ssr: false, loading: () => <Button variant="outline" disabled><Loader2 className="mr-2 h-4 w-4 animate-spin" />Loading...</Button> }
+)
 import {
     AlertDialog,
     AlertDialogAction,
