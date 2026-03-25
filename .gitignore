@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
@@ -23,6 +21,7 @@
 # misc
 .DS_Store
 *.pem
+Thumbs.db
 
 # debug
 npm-debug.log*
@@ -30,8 +29,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # vercel
 .vercel
@@ -40,28 +43,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Temporary/Working SQL files (exclude from git)
-emergency-fix.sql
-fix-*.sql
-test-*.sql
-*-setup.sql
-add-*.sql
-
-# Temporary/Working Documentation files (exclude from git)
-ALL_FIXES_SUMMARY.md
-ANALYTICS_ENHANCEMENTS.md
-AUTH_ROLES_ANALYSIS.md
-IMPLEMENTATION_COMPLETE.md
-IMPLEMENTATION_STATUS.md
-INVENTORY_FLOW_FIX.md
-MULTIPLE_IMAGES_IMPLEMENTATION.md
-PROJECT_REPORT.md
-PROJECT_STATUS.md
-REPORTS_FIXES.md
-ROLE_PERMISSIONS_DETAILED.md
-SALES_ORDER_FIX.md
-SALES_ORDER_FLOW.md
-SAMPLE_DATA.md
-SECURITY_FIXES_APPLIED.md
-STOCK_TRANSFER_FIXES.md
-VIEW_EDIT_DELETE_FIX.md
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

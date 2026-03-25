@@ -166,16 +166,19 @@ export function PurchaseOrderForm() {
 
             const totalAmount = calculateTotal()
 
+            // Clean up empty optional fields - PostgreSQL rejects empty strings for DATE columns
+            const cleanData = {
+                ...data,
+                expected_date: data.expected_date || null,
+                notes: data.notes || null,
+                total_amount: totalAmount,
+                created_by: user.id,
+                status: 'draft' as const,
+            }
+
             const { data: poData, error: poError } = await supabase
                 .from('purchase_orders')
-                .insert([
-                    {
-                        ...data,
-                        total_amount: totalAmount,
-                        created_by: user.id,
-                        status: 'draft', // Use 'draft' instead of 'pending' to match the enum
-                    },
-                ])
+                .insert([cleanData])
                 .select()
                 .single()
 

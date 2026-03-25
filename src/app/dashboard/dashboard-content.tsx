@@ -1,23 +1,36 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Package, DollarSign, AlertTriangle, TrendingUp } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle, GradientCard } from '@/components/ui/card'
+import { 
+    Pill, 
+    DollarSign, 
+    AlertTriangle, 
+    TrendingUp, 
+    Clock, 
+    Package,
+    ArrowUpRight,
+    ArrowDownRight,
+    Activity
+} from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Badge } from '@/components/ui/badge'
-import { format } from 'date-fns'
+import { Badge, StatusBadge } from '@/components/ui/badge'
+import { format, differenceInDays } from 'date-fns'
 import Image from 'next/image'
 import { getFirstProductImage } from '@/lib/utils/product-images'
+import { motion } from 'framer-motion'
 
 interface DashboardStats {
-    totalProducts: number
+    totalMedicines: number
     totalInventoryValue: number
     lowStockCount: number
-    totalTransactions: number
+    totalMovements: number
+    expiringCount?: number
+    outOfStockCount?: number
 }
 
-interface RecentTransaction {
+interface RecentMovement {
     id: string
     type: string
     quantity: number
@@ -33,9 +46,22 @@ interface RecentTransaction {
     }
 }
 
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.1 }
+    }
+}
+
+const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.4 } }
+}
+
 export function DashboardContent() {
     const [stats, setStats] = useState<DashboardStats | null>(null)
-    const [recentTransactions, setRecentTransactions] = useState<RecentTransaction[]>([])
+    const [recentMovements, setRecentMovements] = useState<RecentMovement[]>([])
     const [loading, setLoading] = useState(true)
     const supabase = createClient()
 
@@ -60,8 +86,8 @@ export function DashboardContent() {
 
     const fetchDashboardData = async () => {
         try {
-            // Fetch total products
-            const { count: productsCount } = await supabase
+            // Fetch total medicines
+            const { count: medicinesCount } = await supabase
                 .from('products')
                 .select('*', { count: 'exact', head: true })
                 .eq('is_active', true)
@@ -81,12 +107,12 @@ export function DashboardContent() {
                 .from('low_stock_alerts')
                 .select('*')
 
-            // Fetch total transactions
-            const { count: transactionsCount } = await supabase
+            // Fetch total stock movements
+            const { count: movementsCount } = await supabase
                 .from('transactions')
                 .select('*', { count: 'exact', head: true })
 
-            // Fetch recent transactions
+            // Fetch recent stock movements
             const { data: recentTrans } = await supabase
                 .from('transactions')
                 .select(`
@@ -98,16 +124,16 @@ export function DashboardContent() {
           warehouse:warehouses(name)
         `)
                 .order('created_at', { ascending: false })
-                .limit(10)
+                .limit(8)
 
             setStats({
-                totalProducts: productsCount || 0,
+                totalMedicines: medicinesCount || 0,
                 totalInventoryValue: totalValue,
                 lowStockCount: lowStockData?.length || 0,
-                totalTransactions: transactionsCount || 0,
+                totalMovements: movementsCount || 0,
             })
 
-            setRecentTransactions(recentTrans as any || [])
+            setRecentMovements(recentTrans as any || [])
         } catch (error) {
             console.error('Error fetching dashboard data:', error)
         } finally {
@@ -119,158 +145,237 @@ export function DashboardContent() {
         return <DashboardSkeleton />
     }
 
-    const getTransactionBadge = (type: string) => {
+    const getMovementBadge = (type: string) => {
         const variants: Record<string, { variant: any; label: string }> = {
-            restock: { variant: 'default', label: 'Restock' },
-            sale: { variant: 'destructive', label: 'Sale' },
-            return: { variant: 'secondary', label: 'Return' },
-            adjustment: { variant: 'outline', label: 'Adjustment' },
-            transfer_in: { variant: 'default', label: 'Transfer In' },
-            transfer_out: { variant: 'destructive', label: 'Transfer Out' },
+            restock: { variant: 'success', label: 'Stock In' },
+            sale: { variant: 'warning', label: 'Stock Out' },
+            return: { variant: 'info', label: 'Return' },
+            adjustment: { variant: 'secondary', label: 'Adjustment' },
+            transfer_in: { variant: 'success', label: 'Transfer In' },
+            transfer_out: { variant: 'warning', label: 'Transfer Out' },
         }
-        return variants[type] || { variant: 'default', label: type }
+        return variants[type] || { variant: 'secondary', label: type }
     }
 
     return (
-        <div className="space-y-6">
-            {/* Stats Cards */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-                        <Package className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stats?.totalProducts || 0}</div>
-                        <p className="text-xs text-muted-foreground">Active products in catalog</p>
-                    </CardContent>
-                </Card>
+        <motion.div 
+            className="space-y-6"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+        >
+            {/* Page Header */}
+            <motion.div variants={itemVariants} className="flex flex-col gap-1">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                    Dashboard
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                    Welcome back! Here's your medicine inventory overview.
+                </p>
+            </motion.div>
 
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Inventory Value</CardTitle>
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">
-                            ${(stats?.totalInventoryValue || 0).toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            })}
+            {/* Stats Cards with Gradients */}
+            <motion.div 
+                variants={itemVariants}
+                className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
+            >
+                {/* Total Medicines */}
+                <GradientCard variant="teal">
+                    <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                            <p className="text-sm font-medium text-white/80">Total Medicines</p>
+                            <p className="text-3xl font-bold">{stats?.totalMedicines || 0}</p>
                         </div>
-                        <p className="text-xs text-muted-foreground">Total inventory cost</p>
+                        <div className="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
+                            <Pill className="h-6 w-6 text-white" />
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-white/70">
+                        <Activity className="h-3 w-3" />
+                        <span>Active in catalog</span>
+                    </div>
+                </GradientCard>
+
+                {/* Inventory Value */}
+                <GradientCard variant="mint">
+                    <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                            <p className="text-sm font-medium text-white/80">Inventory Value</p>
+                            <p className="text-3xl font-bold">
+                                ${(stats?.totalInventoryValue || 0).toLocaleString('en-US', {
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0
+                                })}
+                            </p>
+                        </div>
+                        <div className="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
+                            <DollarSign className="h-6 w-6 text-white" />
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-white/70">
+                        <ArrowUpRight className="h-3 w-3" />
+                        <span>Total stock value</span>
+                    </div>
+                </GradientCard>
+
+                {/* Low Stock Alerts */}
+                <GradientCard variant="warning">
+                    <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                            <p className="text-sm font-medium text-white/80">Low Stock Alerts</p>
+                            <p className="text-3xl font-bold">{stats?.lowStockCount || 0}</p>
+                        </div>
+                        <div className="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center animate-pulse-soft">
+                            <AlertTriangle className="h-6 w-6 text-white" />
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-white/70">
+                        <Clock className="h-3 w-3" />
+                        <span>Below reorder level</span>
+                    </div>
+                </GradientCard>
+
+                {/* Stock Movements */}
+                <Card className="border-0 shadow-soft">
+                    <CardContent className="pt-6">
+                        <div className="flex items-center justify-between">
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium text-muted-foreground">Stock Movements</p>
+                                <p className="text-3xl font-bold text-foreground">{stats?.totalMovements || 0}</p>
+                            </div>
+                            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                                <TrendingUp className="h-6 w-6 text-primary" />
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-3">
+                            <Package className="h-3 w-3" />
+                            <span>All-time transactions</span>
+                        </div>
                     </CardContent>
                 </Card>
+            </motion.div>
 
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Low Stock Alerts</CardTitle>
-                        <AlertTriangle className="h-4 w-4 text-orange-500" />
+            {/* Recent Stock Movements */}
+            <motion.div variants={itemVariants}>
+                <Card className="border-0 shadow-soft">
+                    <CardHeader className="pb-4">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <CardTitle className="text-xl">Recent Stock Movements</CardTitle>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                    Latest inventory transactions
+                                </p>
+                            </div>
+                            <Badge variant="secondary" className="hidden sm:flex">
+                                {recentMovements.length} Recent
+                            </Badge>
+                        </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{stats?.lowStockCount || 0}</div>
-                        <p className="text-xs text-muted-foreground">Products below reorder level</p>
-                    </CardContent>
-                </Card>
+                        {recentMovements.length === 0 ? (
+                            <div className="text-center py-12">
+                                <div className="mx-auto h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                                    <Package className="h-8 w-8 text-muted-foreground" />
+                                </div>
+                                <p className="text-muted-foreground">
+                                    No stock movements yet. Start by adding medicines and managing inventory.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
+                                {recentMovements.map((movement, index) => {
+                                    const badge = getMovementBadge(movement.type)
+                                    const product = movement.product as any
+                                    const productImages = product?.product_images
+                                        ? Array.isArray(product.product_images)
+                                            ? product.product_images
+                                            : [product.product_images]
+                                        : []
+                                    const displayImage = getFirstProductImage(productImages) || product?.image_url
 
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Transactions</CardTitle>
-                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stats?.totalTransactions || 0}</div>
-                        <p className="text-xs text-muted-foreground">All-time transactions</p>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Recent Transactions */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Recent Transactions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {recentTransactions.length === 0 ? (
-                        <p className="text-sm text-muted-foreground text-center py-8">
-                            No transactions yet. Start by adding products and managing inventory.
-                        </p>
-                    ) : (
-                        <div className="space-y-4">
-                            {recentTransactions.map((transaction) => {
-                                const badge = getTransactionBadge(transaction.type)
-                                const product = transaction.product as any
-                                const productImages = product?.product_images
-                                    ? Array.isArray(product.product_images)
-                                        ? product.product_images
-                                        : [product.product_images]
-                                    : []
-                                const displayImage = getFirstProductImage(productImages) || product?.image_url
-
-                                return (
-                                    <div
-                                        key={transaction.id}
-                                        className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0"
-                                    >
-                                        <div className="flex items-center gap-4 flex-1">
-                                            {displayImage ? (
-                                                <div className="relative w-16 h-16 rounded-md overflow-hidden border flex-shrink-0">
-                                                    <Image
-                                                        src={displayImage}
-                                                        alt={product?.name || 'Product'}
-                                                        fill
-                                                        className="object-cover"
-                                                        sizes="64px"
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <div className="w-16 h-16 rounded-md border bg-muted flex items-center justify-center flex-shrink-0">
-                                                    <span className="text-xs text-muted-foreground">No img</span>
-                                                </div>
-                                            )}
-                                            <div className="space-y-1 flex-1">
-                                                <div className="flex items-center gap-2">
-                                                    <p className="font-medium">
-                                                        {product?.name || 'Unknown Product'}
-                                                    </p>
-                                                    <Badge variant={badge.variant as any}>{badge.label}</Badge>
-                                                </div>
-                                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                                    <span>SKU: {product?.sku || 'N/A'}</span>
-                                                    <span>•</span>
-                                                    <span>{(transaction.warehouse as any)?.name || 'Unknown Warehouse'}</span>
+                                    return (
+                                        <motion.div
+                                            key={movement.id}
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: index * 0.05 }}
+                                            className="flex items-center justify-between p-3 rounded-xl border border-border/50 hover:bg-accent/50 transition-colors duration-200"
+                                        >
+                                            <div className="flex items-center gap-4 flex-1">
+                                                {displayImage ? (
+                                                    <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-border/50 flex-shrink-0">
+                                                        <Image
+                                                            src={displayImage}
+                                                            alt={product?.name || 'Medicine'}
+                                                            fill
+                                                            className="object-cover"
+                                                            sizes="48px"
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-12 h-12 rounded-lg border border-border/50 bg-muted flex items-center justify-center flex-shrink-0">
+                                                        <Pill className="h-5 w-5 text-muted-foreground" />
+                                                    </div>
+                                                )}
+                                                <div className="space-y-1 flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                        <p className="font-medium text-foreground truncate">
+                                                            {product?.name || 'Unknown Medicine'}
+                                                        </p>
+                                                        <Badge variant={badge.variant as any} className="text-xs">
+                                                            {badge.label}
+                                                        </Badge>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                                        <span className="font-mono">SKU: {product?.sku || 'N/A'}</span>
+                                                        <span>•</span>
+                                                        <span>{(movement.warehouse as any)?.name || 'Unknown Location'}</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="font-medium">
-                                                {transaction.type === 'sale' || transaction.type === 'transfer_out' ? '-' : '+'}
-                                                {transaction.quantity}
-                                            </p>
-                                            <p className="text-xs text-muted-foreground">
-                                                {format(new Date(transaction.created_at), 'MMM d, yyyy')}
-                                            </p>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-        </div>
+                                            <div className="text-right flex-shrink-0 pl-4">
+                                                <p className={`font-semibold ${
+                                                    movement.type === 'sale' || movement.type === 'transfer_out' 
+                                                        ? 'text-warning' 
+                                                        : 'text-success'
+                                                }`}>
+                                                    {movement.type === 'sale' || movement.type === 'transfer_out' ? '-' : '+'}
+                                                    {movement.quantity}
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    {format(new Date(movement.created_at), 'MMM d, h:mm a')}
+                                                </p>
+                                            </div>
+                                        </motion.div>
+                                    )
+                                })}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+            </motion.div>
+        </motion.div>
     )
 }
 
 function DashboardSkeleton() {
     return (
         <div className="space-y-6">
+            {/* Header Skeleton */}
+            <div className="space-y-2">
+                <Skeleton className="h-8 w-48" />
+                <Skeleton className="h-4 w-72" />
+            </div>
+            
+            {/* Stats Skeleton */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {[1, 2, 3, 4].map((i) => (
-                    <Skeleton key={i} className="h-32" />
+                    <Skeleton key={i} className="h-36 rounded-xl" />
                 ))}
             </div>
-            <Skeleton className="h-96" />
+            
+            {/* Table Skeleton */}
+            <Skeleton className="h-96 rounded-xl" />
         </div>
     )
 }

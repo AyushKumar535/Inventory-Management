@@ -6,20 +6,22 @@ import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { 
-    Hexagon, 
+    Pill, 
     BarChart3, 
-    Warehouse, 
+    Building2, 
     TrendingUp, 
     Shield, 
     Zap, 
     CheckCircle2,
     ArrowRight,
     Users,
-    FileText,
-    Bell
+    Clock,
+    AlertTriangle,
+    Activity,
+    Package,
+    Sparkles
 } from 'lucide-react'
 import { motion } from 'framer-motion'
-import Image from 'next/image'
 
 export default function Home() {
     const router = useRouter()
@@ -61,49 +63,55 @@ export default function Home() {
 
     const features = [
         {
-            icon: Hexagon,
-            title: 'Product Management',
-            description: 'Track products with SKU, categories, pricing, and multiple images',
-            color: 'text-blue-500',
+            icon: Pill,
+            title: 'Medicine Management',
+            description: 'Track medicines with batch numbers, expiry dates, manufacturers, and dosage information',
+            color: 'text-primary',
+            bgColor: 'bg-primary/10',
         },
         {
-            icon: Warehouse,
-            title: 'Multi-Warehouse',
-            description: 'Manage inventory across multiple locations with real-time tracking',
-            color: 'text-green-500',
+            icon: Building2,
+            title: 'Multi-Location Storage',
+            description: 'Manage inventory across pharmacies, warehouses, and hospital departments',
+            color: 'text-success',
+            bgColor: 'bg-success/10',
         },
         {
-            icon: TrendingUp,
-            title: 'Real-time Analytics',
-            description: 'Comprehensive reports and analytics with visual charts and graphs',
-            color: 'text-purple-500',
+            icon: Clock,
+            title: 'Expiry Tracking',
+            description: 'Automated alerts for medicines approaching expiry to prevent wastage',
+            color: 'text-warning',
+            bgColor: 'bg-warning/10',
         },
         {
             icon: BarChart3,
-            title: 'Sales & Purchase Orders',
-            description: 'Streamlined order management with automated inventory updates',
-            color: 'text-orange-500',
+            title: 'Stock Analytics',
+            description: 'Comprehensive reports on stock levels, movements, and consumption patterns',
+            color: 'text-info',
+            bgColor: 'bg-info/10',
         },
         {
-            icon: Bell,
+            icon: AlertTriangle,
             title: 'Low Stock Alerts',
-            description: 'Automated alerts when products fall below reorder levels',
-            color: 'text-red-500',
+            description: 'Real-time notifications when medicines fall below reorder levels',
+            color: 'text-warning',
+            bgColor: 'bg-warning/10',
         },
         {
             icon: Shield,
             title: 'Role-Based Access',
-            description: 'Secure access control with admin, manager, staff, and viewer roles',
-            color: 'text-indigo-500',
+            description: 'Secure access control for pharmacists, managers, and staff members',
+            color: 'text-primary',
+            bgColor: 'bg-primary/10',
         },
     ]
 
     const benefits = [
         'Real-time inventory tracking',
-        'Multi-warehouse support',
+        'Expiry date management',
         'Automated stock alerts',
-        'Comprehensive analytics',
-        'Role-based permissions',
+        'Multi-location support',
+        'Batch & lot tracking',
         'Mobile-responsive design',
     ]
 
@@ -112,39 +120,36 @@ export default function Home() {
     }
 
     return (
-        <div className="flex min-h-screen flex-col bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-            {/* Animated Header */}
+        <div className="flex min-h-screen flex-col bg-gradient-to-br from-background via-background to-accent/10">
+            {/* Header */}
             <motion.header
                 initial={{ y: -100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="border-b bg-white/80 backdrop-blur-sm dark:bg-gray-900/80 sticky top-0 z-50"
+                className="border-b border-border/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl sticky top-0 z-50"
             >
                 <div className="container mx-auto flex h-16 items-center justify-between px-4">
                     <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 font-bold text-xl"
+                        whileHover={{ scale: 1.02 }}
+                        className="flex items-center gap-3"
                     >
-                        <motion.div
-                            animate={{ rotate: [0, 10, -10, 0] }}
-                            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                        >
-                            <Hexagon className="h-6 w-6 text-primary" />
-                        </motion.div>
-                        <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                            NovaTrack
-                        </span>
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-teal shadow-md">
+                            <Activity className="h-5 w-5 text-white" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="font-bold text-lg text-foreground">MediStock</span>
+                            <span className="text-xs text-muted-foreground hidden sm:block">Medicine Inventory</span>
+                        </div>
                     </motion.div>
-                    <div className="flex gap-4">
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <div className="flex gap-3">
+                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                             <Button variant="ghost" asChild>
                                 <Link href="/login">Log in</Link>
                             </Button>
                         </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                            <Button asChild>
-                                <Link href="/signup">Sign up</Link>
+                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                            <Button asChild className="shadow-md">
+                                <Link href="/signup">Get Started</Link>
                             </Button>
                         </motion.div>
                     </div>
@@ -153,7 +158,7 @@ export default function Home() {
 
             <main className="flex-1">
                 {/* Hero Section */}
-                <section className="container mx-auto px-4 py-20 lg:py-32">
+                <section className="container mx-auto px-4 py-16 lg:py-24">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         {/* Left Content */}
                         <motion.div
@@ -169,20 +174,20 @@ export default function Home() {
                                     transition={{ delay: 0.2 }}
                                     className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium"
                                 >
-                                    <Zap className="h-4 w-4" />
-                                    <span>Streamline Your Inventory Operations</span>
+                                    <Sparkles className="h-4 w-4" />
+                                    <span>Modern Medicine Inventory Solution</span>
                                 </motion.div>
                                 <motion.h1
                                     initial={{ y: 60, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ duration: 0.6, ease: [0.6, -0.05, 0.01, 0.99] }}
-                                    className="text-5xl lg:text-7xl font-bold tracking-tight"
+                                    className="text-4xl lg:text-6xl font-bold tracking-tight"
                                 >
-                                    <span className="bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
-                                        NovaTrack
+                                    <span className="text-foreground">
+                                        Medicine Inventory
                                     </span>
                                     <br />
-                                    <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                                    <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
                                         Made Simple
                                     </span>
                                 </motion.h1>
@@ -190,10 +195,10 @@ export default function Home() {
                                     initial={{ y: 60, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ duration: 0.6, delay: 0.2, ease: [0.6, -0.05, 0.01, 0.99] }}
-                                    className="text-xl text-muted-foreground max-w-2xl"
+                                    className="text-xl text-muted-foreground max-w-xl"
                                 >
-                                    Manage your products, warehouses, and stock levels with real-time tracking,
-                                    comprehensive analytics, and automated alerts. Built for modern businesses.
+                                    Streamline your pharmacy operations with real-time tracking, 
+                                    expiry management, and automated alerts. Built for healthcare professionals.
                                 </motion.p>
                             </motion.div>
 
@@ -202,19 +207,19 @@ export default function Home() {
                                 className="flex flex-col sm:flex-row gap-4"
                             >
                                 <motion.div
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
-                                    <Button size="lg" className="w-full sm:w-auto" asChild>
+                                    <Button size="lg" className="w-full sm:w-auto shadow-lg" asChild>
                                         <Link href="/signup">
-                                            Get Started Free
+                                            Start Free Trial
                                             <ArrowRight className="ml-2 h-4 w-4" />
                                         </Link>
                                     </Button>
                                 </motion.div>
                                 <motion.div
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
                                 >
                                     <Button size="lg" variant="outline" className="w-full sm:w-auto" asChild>
                                         <Link href="/login">Log in</Link>
@@ -235,112 +240,126 @@ export default function Home() {
                                         transition={{ delay: 0.4 + index * 0.1 }}
                                         className="flex items-center gap-2"
                                     >
-                                        <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
+                                        <div className="h-5 w-5 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+                                            <CheckCircle2 className="h-3 w-3 text-success" />
+                                        </div>
                                         <span className="text-sm text-muted-foreground">{benefit}</span>
                                     </motion.div>
                                 ))}
                             </motion.div>
                         </motion.div>
 
-                        {/* Right Content - GIF/Image */}
+                        {/* Right Content - Illustration */}
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
+                            initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.6, delay: 0.3 }}
-                            className="relative"
+                            className="relative hidden lg:block"
                         >
-                            <motion.div
-                                animate={{
-                                    y: [0, -20, 0],
-                                }}
-                                transition={{
-                                    duration: 3,
-                                    repeat: Infinity,
-                                    ease: 'easeInOut',
-                                }}
-                                className="relative w-full h-[500px] rounded-2xl overflow-hidden border-4 border-primary/20 shadow-2xl"
-                            >
-                                {/* Placeholder for GIF - Replace with your actual GIF */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent flex items-center justify-center">
-                                    <div className="text-center space-y-4 p-8">
-                                        <motion.div
-                                            animate={{ rotate: 360 }}
-                                            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                                        >
-                                            <Hexagon className="h-32 w-32 text-primary/30 mx-auto" />
-                                        </motion.div>
-                                        <p className="text-sm text-muted-foreground">
-                                            Add your inventory management GIF here
-                                        </p>
-                                        <p className="text-xs text-muted-foreground">
-                                            Place your GIF file in: <code className="bg-muted px-2 py-1 rounded">public/landing-hero.gif</code>
-                                        </p>
+                            <div className="relative">
+                                {/* Main Card */}
+                                <motion.div
+                                    animate={{ y: [0, -10, 0] }}
+                                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                                    className="bg-white dark:bg-gray-800 rounded-2xl shadow-soft-lg border border-border/50 p-6"
+                                >
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="h-10 w-10 rounded-xl gradient-teal flex items-center justify-center">
+                                            <Activity className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-foreground">Medicine Dashboard</h3>
+                                            <p className="text-xs text-muted-foreground">Real-time inventory</p>
+                                        </div>
                                     </div>
-                                </div>
-                                {/* Uncomment and use this when you have a GIF */}
-                                <Image
-                                    src="/landing-hero.gif"
-                                    alt="NovaTrack System"
-                                    fill
-                                    className="object-cover"
-                                    priority
-                                    unoptimized
-                                />
-                            </motion.div>
-                            {/* Floating Cards */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.8 }}
-                                className="absolute -bottom-6 -left-6 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-xl border"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 rounded-full bg-green-500 flex items-center justify-center">
-                                        <CheckCircle2 className="h-6 w-6 text-white" />
+                                    
+                                    {/* Mock Stats */}
+                                    <div className="grid grid-cols-2 gap-4 mb-6">
+                                        <div className="rounded-xl bg-primary/10 p-4">
+                                            <Pill className="h-5 w-5 text-primary mb-2" />
+                                            <p className="text-2xl font-bold text-foreground">1,247</p>
+                                            <p className="text-xs text-muted-foreground">Total Medicines</p>
+                                        </div>
+                                        <div className="rounded-xl bg-warning/10 p-4">
+                                            <AlertTriangle className="h-5 w-5 text-warning mb-2" />
+                                            <p className="text-2xl font-bold text-foreground">23</p>
+                                            <p className="text-xs text-muted-foreground">Low Stock</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="font-semibold text-sm">Real-time Updates</p>
-                                        <p className="text-xs text-muted-foreground">Live inventory tracking</p>
+                                    
+                                    {/* Mock List */}
+                                    <div className="space-y-3">
+                                        {[1, 2, 3].map((i) => (
+                                            <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
+                                                <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
+                                                    <Pill className="h-4 w-4 text-muted-foreground" />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <div className="h-3 w-24 bg-muted rounded" />
+                                                    <div className="h-2 w-16 bg-muted rounded mt-1" />
+                                                </div>
+                                                <div className="h-6 w-16 bg-success/20 rounded-full" />
+                                            </div>
+                                        ))}
                                     </div>
-                                </div>
-                            </motion.div>
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 1 }}
-                                className="absolute -top-6 -right-6 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-xl border"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center">
-                                        <BarChart3 className="h-6 w-6 text-white" />
+                                </motion.div>
+
+                                {/* Floating Cards */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.8 }}
+                                    className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-soft-lg border border-border/50"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-10 w-10 rounded-full bg-success flex items-center justify-center">
+                                            <CheckCircle2 className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-sm text-foreground">Stock Updated</p>
+                                            <p className="text-xs text-muted-foreground">+500 units added</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="font-semibold text-sm">Analytics Dashboard</p>
-                                        <p className="text-xs text-muted-foreground">Insights & reports</p>
+                                </motion.div>
+
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 1 }}
+                                    className="absolute -top-4 -right-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-soft-lg border border-border/50"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-10 w-10 rounded-full bg-warning flex items-center justify-center animate-pulse-soft">
+                                            <Clock className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-sm text-foreground">Expiry Alert</p>
+                                            <p className="text-xs text-muted-foreground">12 items this month</p>
+                                        </div>
                                     </div>
-                                </div>
-                            </motion.div>
+                                </motion.div>
+                            </div>
                         </motion.div>
                     </div>
                 </section>
 
                 {/* Features Section */}
-                <section className="container mx-auto px-4 py-20 bg-white/50 dark:bg-gray-800/50">
+                <section className="container mx-auto px-4 py-16 lg:py-24">
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="text-center space-y-4 mb-16"
+                        className="text-center space-y-4 mb-12"
                     >
-                        <h2 className="text-4xl lg:text-5xl font-bold">
-                            Powerful Features for{' '}
-                            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                                Modern Businesses
+                        <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
+                            Everything You Need for{' '}
+                            <span className="bg-gradient-to-r from-primary to-success bg-clip-text text-transparent">
+                                Medicine Inventory
                             </span>
                         </h2>
-                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                            Everything you need to manage your inventory efficiently and scale your operations
+                        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                            Purpose-built features for pharmacies, hospitals, and medical stores
                         </p>
                     </motion.div>
 
@@ -349,140 +368,56 @@ export default function Home() {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                        className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
                     >
                         {features.map((feature, index) => (
                             <motion.div
                                 key={feature.title}
                                 variants={itemVariants}
-                                whileHover={{ y: -8, scale: 1.02 }}
-                                className="group relative p-6 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-primary/50 hover:shadow-xl transition-all duration-300"
+                                whileHover={{ y: -4 }}
+                                className="group p-6 rounded-2xl bg-white dark:bg-gray-800 border border-border/50 hover:border-primary/30 shadow-soft hover:shadow-soft-lg transition-all duration-300"
                             >
-                                <motion.div
-                                    whileHover={{ rotate: [0, -10, 10, 0] }}
-                                    transition={{ duration: 0.5 }}
-                                    className={`h-12 w-12 rounded-lg ${feature.color} bg-opacity-10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
-                                >
+                                <div className={`h-12 w-12 rounded-xl ${feature.bgColor} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                                     <feature.icon className={`h-6 w-6 ${feature.color}`} />
-                                </motion.div>
-                                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                                <p className="text-muted-foreground">{feature.description}</p>
-                                <motion.div
-                                    initial={{ width: 0 }}
-                                    whileHover={{ width: '100%' }}
-                                    className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-primary to-primary/60 rounded-b-xl"
-                                />
-                            </motion.div>
-                        ))}
-                    </motion.div>
-                </section>
-
-                {/* Stats Section */}
-                <section className="container mx-auto px-4 py-20">
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        className="grid grid-cols-2 md:grid-cols-4 gap-8"
-                    >
-                        {[
-                            { label: 'Products', value: 'Unlimited', icon: Hexagon },
-                            { label: 'Warehouses', value: 'Multi-Location', icon: Warehouse },
-                            { label: 'Real-time', value: 'Live Updates', icon: Zap },
-                            { label: 'Secure', value: 'RBAC Enabled', icon: Shield },
-                        ].map((stat, index) => (
-                            <motion.div
-                                key={stat.label}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1 }}
-                                whileHover={{ scale: 1.05 }}
-                                className="text-center space-y-2"
-                            >
-                                <motion.div
-                                    animate={{ rotate: [0, 5, -5, 0] }}
-                                    transition={{ duration: 2, repeat: Infinity, delay: index * 0.5 }}
-                                    className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 text-primary mb-4"
-                                >
-                                    <stat.icon className="h-8 w-8" />
-                                </motion.div>
-                                <p className="text-2xl font-bold">{stat.value}</p>
-                                <p className="text-sm text-muted-foreground">{stat.label}</p>
+                                </div>
+                                <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
+                                <p className="text-muted-foreground text-sm">{feature.description}</p>
                             </motion.div>
                         ))}
                     </motion.div>
                 </section>
 
                 {/* CTA Section */}
-                <section className="container mx-auto px-4 py-20">
+                <section className="container mx-auto px-4 py-16 lg:py-24">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary to-primary/80 p-12 text-center text-white"
+                        className="relative overflow-hidden rounded-3xl gradient-teal p-8 lg:p-12 text-center text-white"
                     >
-                        <motion.div
-                            animate={{
-                                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-                            }}
-                            transition={{
-                                duration: 10,
-                                repeat: Infinity,
-                                ease: 'linear',
-                            }}
-                            className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-primary opacity-50"
-                            style={{
-                                backgroundSize: '200% 200%',
-                            }}
-                        />
-                        <div className="relative z-10 space-y-6">
-                            <motion.h2
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                className="text-4xl lg:text-5xl font-bold"
-                            >
-                                Ready to Get Started?
-                            </motion.h2>
-                            <motion.p
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.1 }}
-                                className="text-xl opacity-90 max-w-2xl mx-auto"
-                            >
-                                Join thousands of businesses managing their inventory efficiently
-                            </motion.p>
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.2 }}
-                                className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
-                            >
-                                <motion.div
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    <Button size="lg" variant="secondary" className="w-full sm:w-auto" asChild>
+                        <div className="relative z-10 space-y-6 max-w-2xl mx-auto">
+                            <h2 className="text-3xl lg:text-4xl font-bold">
+                                Ready to Modernize Your Pharmacy?
+                            </h2>
+                            <p className="text-lg text-white/80">
+                                Join healthcare professionals who trust MediStock for their inventory management
+                            </p>
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                                    <Button size="lg" variant="secondary" className="w-full sm:w-auto shadow-lg" asChild>
                                         <Link href="/signup">
                                             Start Free Trial
                                             <ArrowRight className="ml-2 h-4 w-4" />
                                         </Link>
                                     </Button>
                                 </motion.div>
-                                <motion.div
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white/10 border-white/20 text-white hover:bg-white/20" asChild>
+                                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                                    <Button size="lg" variant="outline" className="w-full sm:w-auto bg-white/10 border-white/30 text-white hover:bg-white/20" asChild>
                                         <Link href="/login">Log in</Link>
                                     </Button>
                                 </motion.div>
-                            </motion.div>
+                            </div>
                         </div>
                     </motion.div>
                 </section>
@@ -493,16 +428,18 @@ export default function Home() {
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                className="border-t bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm"
+                className="border-t border-border/50 bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm"
             >
                 <div className="container mx-auto px-4 py-8">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-2">
-                            <Hexagon className="h-5 w-5 text-primary" />
-                            <span className="font-semibold">NovaTrack System</span>
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-teal">
+                                <Activity className="h-4 w-4 text-white" />
+                            </div>
+                            <span className="font-semibold text-foreground">MediStock</span>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                            © {new Date().getFullYear()} All rights reserved.
+                            © {new Date().getFullYear()} MediStock. All rights reserved.
                         </p>
                     </div>
                 </div>

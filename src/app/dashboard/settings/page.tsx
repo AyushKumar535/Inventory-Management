@@ -1,22 +1,24 @@
-import { Metadata } from 'next'
+'use client'
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ProfileSettings } from './profile-settings'
 import { SecuritySettings } from './security-settings'
 import { UserManagement } from './user-management'
-
-export const metadata: Metadata = {
-    title: 'Settings',
-    description: 'Manage your account settings and preferences',
-}
+import { Settings } from 'lucide-react'
 
 export default function SettingsPage() {
     return (
-        <div className="flex-1 space-y-4 p-8 pt-6">
-            <div>
-                <h2 className="text-3xl font-bold tracking-tight">Settings</h2>
-                <p className="text-muted-foreground">
-                    Manage your account settings and preferences
-                </p>
+        <div className="space-y-6">
+            <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Settings className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                    <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Settings</h1>
+                    <p className="text-sm text-muted-foreground">
+                        Manage your account settings and preferences
+                    </p>
+                </div>
             </div>
 
             <Tabs defaultValue="profile" className="space-y-4">

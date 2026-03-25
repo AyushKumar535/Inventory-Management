@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const inter = Inter({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "NovaTrack - Smart Inventory Management",
-  description: "Next-generation inventory management system for modern businesses.",
+  title: "MediStock - Medicine Inventory Management",
+  description: "Modern medicine inventory management system for pharmacies, hospitals, and healthcare facilities",
 };
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${outfit.variable} antialiased font-sans`}
+        className={`${inter.variable} antialiased`}
       >
         {children}
       </body>

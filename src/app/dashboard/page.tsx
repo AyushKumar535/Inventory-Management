@@ -5,18 +5,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 export default function Page() {
     console.log('🏠 Dashboard Home Page Rendering')
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                <p className="text-muted-foreground">
-                    Overview of your NovaTrack system
-                </p>
-            </div>
-
-            <Suspense fallback={<DashboardSkeleton />}>
-                <DashboardContent />
-            </Suspense>
-        </div>
+        <Suspense fallback={<DashboardSkeleton />}>
+            <DashboardContent />
+        </Suspense>
     )
 }
 

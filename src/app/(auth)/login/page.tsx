@@ -76,9 +76,9 @@ function LoginForm() {
                 <CardHeader className="space-y-1">
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="text-2xl font-bold">Sign In to NovaTrack</CardTitle>
+                            <CardTitle className="text-2xl font-bold">Sign In</CardTitle>
                             <CardDescription>
-                                Enter your email and password to access your dashboard
+                                Enter your email and password to access your account
                             </CardDescription>
                         </div>
                         <Button variant="ghost" size="icon" asChild>
@@ -119,7 +119,7 @@ function LoginForm() {
                             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Sign In
                         </Button>
-
+                        
                         <div className="relative w-full">
                             <div className="absolute inset-0 flex items-center">
                                 <Separator className="w-full" />

@@ -233,20 +233,22 @@ export function SalesOrderForm() {
                 warehouse_id: data.warehouse_id,
                 total_amount: totalAmount,
             });
+            // Build insert data - handle empty optional strings and schema compatibility
+            const insertData: Record<string, any> = {
+                order_number: soNumber,
+                customer_name: data.customer_name,
+                customer_email: data.customer_email || null,
+                customer_phone: data.customer_phone || null,
+                order_date: data.order_date ? new Date(data.order_date).toISOString() : new Date().toISOString(),
+                status: 'pending',
+                total_amount: totalAmount,
+                created_by: user.id,
+                notes: data.shipping_address ? `Shipping: ${data.shipping_address}` : null,
+            }
+
             const { data: salesOrder, error: soError } = await supabase
                 .from('sales_orders')
-                .insert({
-                    order_number: soNumber,
-                    customer_name: data.customer_name,
-                    customer_email: data.customer_email,
-                    customer_phone: data.customer_phone,
-                    shipping_address: data.shipping_address,
-                    warehouse_id: data.warehouse_id,
-                    order_date: data.order_date,
-                    status: 'pending',
-                    total_amount: totalAmount,
-                    created_by: user.id,
-                })
+                .insert(insertData)
                 .select()
                 .single()
 
@@ -264,7 +266,6 @@ export function SalesOrderForm() {
                 warehouse_id: data.warehouse_id,
                 quantity: item.quantity,
                 unit_price: item.unit_price,
-                total_price: item.quantity * item.unit_price,
             }))
 
             console.log('Inserting order items:', items);

@@ -94,9 +94,9 @@ export default function SignupPage() {
                 <CardHeader className="space-y-1">
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="text-2xl font-bold">Join NovaTrack</CardTitle>
+                            <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
                             <CardDescription>
-                                Enter your details to create your inventory workspace
+                                Enter your details to create your account
                             </CardDescription>
                         </div>
                         <Button variant="ghost" size="icon" asChild>
